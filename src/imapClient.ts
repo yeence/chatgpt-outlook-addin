@@ -8,6 +8,7 @@ export interface ImapConfig {
   password: string;
   maxResults: number;
   allowedMailboxes: string[] | null;
+  draftsMailbox: string | null;
 }
 
 export function loadConfig(): ImapConfig {
@@ -33,6 +34,7 @@ export function loadConfig(): ImapConfig {
     allowedMailboxes: allowed
       ? allowed.split(",").map((m) => m.trim()).filter(Boolean)
       : null,
+    draftsMailbox: process.env.IMAP_DRAFTS_MAILBOX?.trim() || null,
   };
 }
 
@@ -67,6 +69,22 @@ export async function withClient<T>(
       client.close();
     }
   }
+}
+
+export async function resolveDraftsMailbox(
+  config: ImapConfig,
+  client: ImapFlow
+): Promise<string> {
+  if (config.draftsMailbox) return config.draftsMailbox;
+
+  const list = await client.list();
+  const bySpecialUse = list.find((m) => m.specialUse === "\\Drafts");
+  if (bySpecialUse) return bySpecialUse.path;
+
+  const byName = list.find((m) => /drafts/i.test(m.name));
+  if (byName) return byName.path;
+
+  return "Drafts";
 }
 
 export async function withMailbox<T>(

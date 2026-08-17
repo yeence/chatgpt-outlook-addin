@@ -2,12 +2,14 @@
 import "dotenv/config";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import MailComposer from "nodemailer/lib/mail-composer/index.js";
 import { simpleParser } from "mailparser";
 import { z } from "zod";
 import {
   assertMailboxAllowed,
   buildSearch,
   loadConfig,
+  resolveDraftsMailbox,
   withClient,
   withMailbox,
 } from "./imapClient.js";
@@ -229,6 +231,86 @@ server.registerTool(
         })
       );
       if (!result) return errorResult(`Message uid=${uid} not found in ${mailbox}`);
+      return text(result);
+    } catch (err) {
+      return errorResult(err);
+    }
+  }
+);
+
+function buildRawMessage(options: {
+  from?: string;
+  to?: string[];
+  cc?: string[];
+  bcc?: string[];
+  subject?: string;
+  text?: string;
+  html?: string;
+  inReplyTo?: string;
+  references?: string[];
+}): Promise<Buffer> {
+  const composer = new MailComposer({
+    from: options.from,
+    to: options.to,
+    cc: options.cc,
+    bcc: options.bcc,
+    subject: options.subject,
+    text: options.text,
+    html: options.html,
+    inReplyTo: options.inReplyTo,
+    references: options.references,
+    date: new Date(),
+  });
+
+  return composer.compile().build();
+}
+
+server.registerTool(
+  "create_draft",
+  {
+    title: "Create draft",
+    description:
+      "Compose a message and save it as a draft via IMAP APPEND (flagged \\Draft). This never sends mail — it only writes to the Drafts mailbox, exactly like clicking \"Save draft\" in a mail client.",
+    inputSchema: {
+      to: z.array(z.string()).optional().describe("Recipient addresses"),
+      cc: z.array(z.string()).optional(),
+      bcc: z.array(z.string()).optional(),
+      subject: z.string().optional(),
+      text: z.string().optional().describe("Plain-text body"),
+      html: z.string().optional().describe("HTML body"),
+      inReplyTo: z.string().optional().describe("Message-Id header of the message being replied to"),
+      references: z.array(z.string()).optional().describe("Message-Id chain for threading"),
+      mailbox: z
+        .string()
+        .optional()
+        .describe("Destination mailbox; defaults to the account's Drafts folder"),
+    },
+  },
+  async ({ to, cc, bcc, subject, text: bodyText, html, inReplyTo, references, mailbox }) => {
+    try {
+      if (!to?.length && !subject && !bodyText && !html) {
+        return errorResult("Provide at least one of: to, subject, text, html.");
+      }
+
+      const result = await withClient(config, async (client) => {
+        const targetMailbox = mailbox ?? (await resolveDraftsMailbox(config, client));
+        assertMailboxAllowed(config, targetMailbox);
+
+        const raw = await buildRawMessage({
+          from: config.user,
+          to,
+          cc,
+          bcc,
+          subject,
+          text: bodyText,
+          html,
+          inReplyTo,
+          references,
+        });
+
+        return client.append(targetMailbox, raw, ["\\Draft"]);
+      });
+
       return text(result);
     } catch (err) {
       return errorResult(err);

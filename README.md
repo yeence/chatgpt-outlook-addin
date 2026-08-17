@@ -13,13 +13,21 @@ standard IMAP provider.
 | `list_messages` | List the most recent messages in a mailbox |
 | `search_messages` | Search by from/to/subject/text/date range/unseen/flagged |
 | `get_message` | Fetch full parsed content (body + attachment metadata) of one message by UID |
+| `create_draft` | Compose a message and save it to the Drafts folder via IMAP APPEND |
 | `set_flags` | Add/remove flags, e.g. mark read/unread or starred |
 | `move_message` | Move a message to another folder |
 | `delete_message` | Delete a message (soft-flag or permanent expunge) |
 
-This server is **read/manage only** — it does not send mail (that's SMTP, a
-different protocol). If you need send capability too, pair it with an SMTP MCP
-server or add a `send_message` tool using `nodemailer`.
+This server never sends mail. Writing is limited to `create_draft`, which saves
+a message to the Drafts folder (flagged `\Draft`) exactly like clicking "Save
+draft" in a mail client — there is no `send_message` tool, and none of the IMAP
+operations here can dispatch an email. Sending requires SMTP, a separate
+protocol/credential this server doesn't touch.
+
+`create_draft` auto-detects the Drafts folder (via the `\Drafts` special-use
+flag, falling back to a folder literally named "Drafts"). Override with
+`IMAP_DRAFTS_MAILBOX` in `.env` if your provider names it differently (e.g.
+Gmail uses `[Gmail]/Drafts`).
 
 ## Setup
 
