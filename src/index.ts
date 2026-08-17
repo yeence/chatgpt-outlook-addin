@@ -2,11 +2,11 @@
 import "dotenv/config";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import MailComposer from "nodemailer/lib/mail-composer/index.js";
 import { simpleParser } from "mailparser";
 import { z } from "zod";
 import {
   assertMailboxAllowed,
+  buildRawMessage,
   buildSearch,
   loadConfig,
   resolveDraftsMailbox,
@@ -237,33 +237,6 @@ server.registerTool(
     }
   }
 );
-
-function buildRawMessage(options: {
-  from?: string;
-  to?: string[];
-  cc?: string[];
-  bcc?: string[];
-  subject?: string;
-  text?: string;
-  html?: string;
-  inReplyTo?: string;
-  references?: string[];
-}): Promise<Buffer> {
-  const composer = new MailComposer({
-    from: options.from,
-    to: options.to,
-    cc: options.cc,
-    bcc: options.bcc,
-    subject: options.subject,
-    text: options.text,
-    html: options.html,
-    inReplyTo: options.inReplyTo,
-    references: options.references,
-    date: new Date(),
-  });
-
-  return composer.compile().build();
-}
 
 server.registerTool(
   "create_draft",

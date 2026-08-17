@@ -1,7 +1,7 @@
 {
   "name": "imap-mcp-server",
   "version": "0.1.0",
-  "description": "Custom Model Context Protocol (MCP) server for reading and managing email over IMAP",
+  "description": "Custom Model Context Protocol (MCP) server for reading email and writing drafts over IMAP",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "test:imap": "tsx scripts/test-connection.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

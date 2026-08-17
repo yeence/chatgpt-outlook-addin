@@ -51,10 +51,15 @@ Gmail uses `[Gmail]/Drafts`).
    IMAP_PASSWORD=your-app-password
    ```
 
-   **Use an app password, not your normal password.** For Gmail, enable 2FA then
-   create one at https://myaccount.google.com/apppasswords. For Outlook/Office
-   365, create an app password under Security settings, or use `outlook.office365.com`
-   as the host with modern auth if your tenant requires OAuth (see note below).
+   `.env` is already listed in `.gitignore`, so it never gets committed. The
+   server itself never contains a username or password — `src/imapClient.ts`
+   only ever reads `process.env.IMAP_*`, which `dotenv` populates from `.env`
+   at startup.
+
+   **Always use an app password here, never your real account password.** An
+   app password is a long random string scoped to one app, and it can be
+   revoked independently at any time without changing your main password. See
+   [Generating an App Password](#generating-an-app-password) below.
 
 3. Common provider settings:
 
@@ -64,6 +69,81 @@ Gmail uses `[Gmail]/Drafts`).
    | Outlook/Office 365 | `outlook.office365.com` | 993 |
    | iCloud | `imap.mail.me.com` | 993 |
    | Fastmail | `imap.fastmail.com` | 993 |
+
+## Generating an App Password
+
+App passwords require two-factor authentication (2FA) to be enabled on the
+account first — providers only offer the app-password option once 2FA is on.
+
+**Gmail**
+1. Turn on 2-Step Verification: https://myaccount.google.com/signinoptions/two-step-verification
+2. Go to https://myaccount.google.com/apppasswords (sign in again if asked).
+3. Enter a name for the app, e.g. `imap-mcp-server`, and click **Create**.
+4. Google shows a 16-character password once — copy it immediately into
+   `IMAP_PASSWORD` in `.env`. It won't be shown again; if you lose it, revoke
+   it and generate a new one.
+
+**Outlook / Office 365 (personal Microsoft account)**
+1. Enable two-step verification: https://account.live.com/proofs/manage
+2. Go to https://account.live.com/proofs/AppPassword
+3. Click **Create a new app password** and copy the generated password into
+   `IMAP_PASSWORD`.
+4. For work/school (Microsoft 365 tenant) accounts, app passwords are
+   controlled by your admin under Security settings — basic auth/IMAP may be
+   disabled entirely, in which case OAuth2/XOAUTH2 is required (see
+   [OAuth-only providers](#oauth-only-providers) below).
+
+**iCloud**
+1. Enable two-factor authentication on your Apple ID (required).
+2. Go to https://appleid.apple.com/account/manage, sign in, and open
+   **Sign-In and Security → App-Specific Passwords**.
+3. Click **Generate an app-specific password**, name it, and copy it into
+   `IMAP_PASSWORD`.
+
+**Fastmail**
+1. Go to Settings → **Password & Security → App passwords**.
+2. Click **New app password**, choose access scope "Mail (IMAP/SMTP)", and
+   copy the generated password into `IMAP_PASSWORD`.
+
+After generating the password, keep it only in your local `.env` file (or
+your MCP client's env config, e.g. `claude_desktop_config.json`) — never in
+code, chat, or a committed file. If a password is ever pasted somewhere
+public by mistake, revoke it immediately from the same settings page and
+generate a new one.
+
+## Testing the connection safely
+
+Before wiring the server into an MCP client, validate that IMAP connectivity
+and the underlying logic behind each tool actually work, without exposing any
+of your data:
+
+```bash
+npm run test:imap
+```
+
+This runs `scripts/test-connection.ts`, a local script that:
+
+- connects and authenticates using the same `.env` values as the server;
+- exercises the logic behind `list_mailboxes`, `list_messages`, and
+  `get_message` against your real mailbox;
+- prints **only pass/fail status and counts** — never your password, never
+  message subjects/bodies/senders, and never full mailbox names. Your email
+  address is shown masked (e.g. `jo***@example.com`) so you can confirm which
+  account it connected to.
+
+`create_draft` is not exercised by default, since it's the one operation that
+writes something. To also test it, run:
+
+```bash
+npm run test:imap -- --create-draft
+```
+
+This appends one throwaway draft (subject `[imap-mcp-server self-test] <timestamp>`,
+addressed only to yourself) to your Drafts folder, confirms it saved, and then
+deletes that single test message immediately afterward using a direct IMAP
+call local to the script — the MCP server itself has no delete tool, so this
+cleanup step exists only inside the test script, purely to leave your mailbox
+exactly as it found it.
 
 ## Running standalone
 

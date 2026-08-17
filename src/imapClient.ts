@@ -1,4 +1,5 @@
 import { ImapFlow, type ImapFlowOptions, type SearchObject } from "imapflow";
+import MailComposer from "nodemailer/lib/mail-composer/index.js";
 
 export interface ImapConfig {
   host: string;
@@ -98,6 +99,35 @@ export async function withMailbox<T>(
   } finally {
     lock.release();
   }
+}
+
+export interface DraftContent {
+  from?: string;
+  to?: string[];
+  cc?: string[];
+  bcc?: string[];
+  subject?: string;
+  text?: string;
+  html?: string;
+  inReplyTo?: string;
+  references?: string[];
+}
+
+export function buildRawMessage(options: DraftContent): Promise<Buffer> {
+  const composer = new MailComposer({
+    from: options.from,
+    to: options.to,
+    cc: options.cc,
+    bcc: options.bcc,
+    subject: options.subject,
+    text: options.text,
+    html: options.html,
+    inReplyTo: options.inReplyTo,
+    references: options.references,
+    date: new Date(),
+  });
+
+  return composer.compile().build();
 }
 
 export function buildSearch(criteria: {
