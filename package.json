@@ -1,0 +1,31 @@
+{
+  "name": "imap-mcp-server",
+  "version": "0.1.0",
+  "description": "Custom Model Context Protocol (MCP) server for reading and managing email over IMAP",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "imap-mcp-server": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "dotenv": "^16.4.5",
+    "imapflow": "^1.0.171",
+    "mailparser": "^3.7.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/mailparser": "^3.4.5",
+    "@types/node": "^22.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
