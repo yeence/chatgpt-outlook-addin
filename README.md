@@ -1,9 +1,9 @@
 # imap-mcp-server
 
 A custom [Model Context Protocol](https://modelcontextprotocol.io) server that lets
-an MCP-compatible client (Claude Desktop, Claude Code, etc.) read and manage email
-over **IMAP** — works with Gmail, Outlook/Office 365, iCloud, Fastmail, or any
-standard IMAP provider.
+an MCP-compatible client (Claude Desktop, Claude Code, etc.) read email and write
+drafts over **IMAP** — works with Gmail, Outlook/Office 365, iCloud, Fastmail, or
+any standard IMAP provider.
 
 ## Tools
 
@@ -14,15 +14,14 @@ standard IMAP provider.
 | `search_messages` | Search by from/to/subject/text/date range/unseen/flagged |
 | `get_message` | Fetch full parsed content (body + attachment metadata) of one message by UID |
 | `create_draft` | Compose a message and save it to the Drafts folder via IMAP APPEND |
-| `set_flags` | Add/remove flags, e.g. mark read/unread or starred |
-| `move_message` | Move a message to another folder |
-| `delete_message` | Delete a message (soft-flag or permanent expunge) |
 
-This server never sends mail. Writing is limited to `create_draft`, which saves
-a message to the Drafts folder (flagged `\Draft`) exactly like clicking "Save
-draft" in a mail client — there is no `send_message` tool, and none of the IMAP
-operations here can dispatch an email. Sending requires SMTP, a separate
-protocol/credential this server doesn't touch.
+This server is intentionally read-only against existing mail: there's no way to
+mark messages read/unread, flag them, move them between folders, or delete
+them. The only write path is `create_draft`, which saves a new message to the
+Drafts folder (flagged `\Draft`) exactly like clicking "Save draft" in a mail
+client — there is no `send_message` tool either, and nothing here can dispatch
+an email. Sending requires SMTP, a separate protocol/credential this server
+doesn't touch.
 
 `create_draft` auto-detects the Drafts folder (via the `\Drafts` special-use
 flag, falling back to a folder literally named "Drafts"). Override with
@@ -104,11 +103,9 @@ build step during development.
 
 ## Safety notes
 
-- `delete_message` defaults to **permanent** deletion (flags `\Deleted` and
-  expunges). Pass `permanent: false` to just flag it without expunging.
 - Set `IMAP_ALLOWED_MAILBOXES` in `.env` (comma-separated) to restrict which
-  folders `move_message`/`delete_message`/etc. can touch, e.g.
-  `IMAP_ALLOWED_MAILBOXES=INBOX,Archive`.
+  folders any tool — including `create_draft`'s destination — can touch, e.g.
+  `IMAP_ALLOWED_MAILBOXES=INBOX,Drafts`.
 - `IMAP_MAX_RESULTS` caps how many messages a single `list_messages`/
   `search_messages` call can return (default 50), to avoid dumping huge mailboxes
   into a model's context.
