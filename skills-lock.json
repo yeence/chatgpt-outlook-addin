@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "skills": {
+    "apify-ads-intelligence": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-ads-intelligence/SKILL.md",
+      "computedHash": "cff9277ebafc30082306250dc49d47f722b3a4082941f9fd868e4e1c6c13974b"
+    },
+    "apify-ai-search-visibility-tracker": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-ai-search-visibility-tracker/SKILL.md",
+      "computedHash": "e1da94c7c283965633d3b9ccded097bd791fe67275e976db98d7a5c2f7f10e5a"
+    },
+    "apify-booking-host-leads": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-booking-host-leads/SKILL.md",
+      "computedHash": "70cda583ca16b0c829c80d9ee3c1165cb8aa98cb3ef0ce4d1d9b198f38967120"
+    },
+    "apify-buying-signal-detection": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-buying-signal-detection/SKILL.md",
+      "computedHash": "9d33f1bdfcee87f61fcfd2b6a6dcea31c77b4861a883671f144af84b49bf7abe"
+    },
+    "apify-easy-competitive-intelligence": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-easy-competitive-intelligence/SKILL.md",
+      "computedHash": "c5ce54b2f32d37442fd2a926a48e1b0bac2c07e2d7a68a8665c1a24be31b203d"
+    },
+    "apify-ecommerce": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-ecommerce/SKILL.md",
+      "computedHash": "ef41b820c4001dabc60a89957229cdbcc3de54ee16ceda1a64c8f0f3c41e9975"
+    },
+    "apify-influencer-brand-collabs": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-influencer-brand-collabs/SKILL.md",
+      "computedHash": "85e62755324abcfcd46e146c2a58da028a701d6140c6bfd7a5194ebc3afcf7d6"
+    },
+    "apify-lead-scoring-enrichment": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-lead-scoring-enrichment/SKILL.md",
+      "computedHash": "3a4e71db936c5c120e268e779237839c503b911b6552ccad71e8e7d04dedda2a"
+    },
+    "apify-link-prospecting-outreach": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-link-prospecting-outreach/SKILL.md",
+      "computedHash": "f5d0f63c96c1955f671fb751aedce2cf87a4dd70c7e81dab3bae070e30c6bea2"
+    },
+    "apify-osint-threat-intel": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-osint-threat-intel/SKILL.md",
+      "computedHash": "d4797af93038952653841fb7d3d5582bd96cd1c061804ecc884b2fd64d9d4e09"
+    },
+    "apify-verified-email-finder": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-verified-email-finder/SKILL.md",
+      "computedHash": "7b987a45acd9e4b4e78db3f8ee956d533dcb9bd5b75828b75ae72eb45f6e1771"
+    },
+    "apify-x402-agentic-wallet": {
+      "source": "apify/awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apify-x402-agentic-wallet/SKILL.md",
+      "computedHash": "0d731b10957934d915ec599339c1f95c4a53c2c9381ecb1e0ee3789daa66907c"
+    }
+  }
+}

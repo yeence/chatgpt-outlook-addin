@@ -1,0 +1,50 @@
+{
+  "brand": {
+    "name": "IDS Global",
+    "domain": "idsglobal.eu",
+    "surface_forms": ["IDS Global", "idsglobal.eu", "ИДС Глобал"]
+  },
+  "competitors": [],
+  "prompts": [
+    "софтуер за дигитални дисплеи българия",
+    "digital signage софтуер за управление на екрани",
+    "професионални рекламни дисплеи за търговски обекти",
+    "дигитални екрани за магазини цени",
+    "дигитално меню за заведения и ресторанти",
+    "доставчици на digital signage решения в българия",
+    "интерактивни рекламни тотеми и екрани",
+    "системи за централизирано управление на рекламни екрани",
+    "професионални дисплеи за бензиностанции и вериги",
+    "изграждане на видеостени за търговски площи",
+    "дигитални меню бордове за бързо хранене",
+    "екрани за дигитална реклама в магазин"
+  ],
+  "cadence": "weekly",
+  "run_hour_local": 9,
+  "include_full_answers": "on_demand",
+  "ai_sources": {
+    "ai_overviews": false,
+    "ai_mode": false,
+    "chatgpt": true,
+    "perplexity": true,
+    "copilot": false,
+    "gemini": false
+  },
+  "apify": {
+    "actor_id": "apify/google-search-scraper",
+    "dataset_name": "ai-visibility-idsglobal",
+    "kv_store_name": "ai-visibility-idsglobal-raw",
+    "country_code": "BG",
+    "language_code": "bg",
+    "location_uule": null
+  },
+  "_comments": {
+    "industry": "digital signage and commercial displays -- for reference only, not read by the runner.",
+    "brand.domain": "Registrable domain only. blog.<domain> and www.<domain> count as citations.",
+    "competitors": "None specified yet -- pass name+domain pairs to track them alongside the brand.",
+    "cadence": "weekly by default; change to daily|monthly and re-run install_cron.sh if a recurring schedule is wanted.",
+    "ai_sources": "Only ChatGPT Search and Perplexity are enabled per request; AI Overviews/AI Mode/Copilot/Gemini are off to avoid unwanted cost.",
+    "apify.dataset_name": "Named dataset to append to. Created on first run if missing.",
+    "apify.kv_store_name": "Named key-value store for long-term raw preservation."
+  }
+}
